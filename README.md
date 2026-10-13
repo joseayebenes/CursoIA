@@ -53,9 +53,37 @@ export CURSO_API_KEY="<clave>"
 
 En Windows, `setx CURSO_BASE_URL "https://<gateway>/v1"` (y abrir otra terminal).
 
-Por defecto: modelo `gemma-4`, embeddings `embeddinggemma`, 28 peticiones por minuto como
-mucho, los certificados del sistema (donde está la raíz corporativa) y el proxy de
-`HTTPS_PROXY`. Todas las variables están al principio de `curso/llm.py`.
+Por defecto: modelo `gemma-4`, embeddings `embeddinggemma` y 28 peticiones por minuto como
+mucho. Todas las variables están al principio de `curso/llm.py`.
+
+### La red de la empresa: proxy y certificados
+
+La API de la empresa solo se alcanza a través del proxy corporativo y confiando en su
+certificado raíz, porque el proxy inspecciona TLS:
+
+| Variable | Para qué | Por defecto |
+|---|---|---|
+| `CURSO_PROXY` | el proxy, con usuario y contraseña si los pide: `http://usuario:contraseña@proxy:8080` | `HTTPS_PROXY` o `HTTP_PROXY` |
+| `CURSO_NO_PROXY` | hosts que van directos, separados por comas (un gateway interno puede no necesitar el proxy) | `NO_PROXY`, o `localhost` |
+| `CURSO_CA_CERT` | `system`: el almacén de certificados de Windows o macOS, donde ya está la raíz corporativa; o la ruta de un PEM (o carpeta) con la CA corporativa, que se añade a las habituales | `system` (o `SSL_CERT_FILE`) |
+| `CURSO_CLIENT_CERT`, `CURSO_CLIENT_KEY`, `CURSO_CLIENT_KEY_PASSWORD` | certificado de cliente, si el servidor lo pide (TLS mutuo) | ninguno |
+| `CURSO_MAX_WAIT` | segundos esperando mientras el servidor rechaza por el cupo (409 o 429) | 900 |
+
+Lo primero en un equipo nuevo:
+
+```bash
+python -m curso.llm
+```
+
+Enseña la configuración efectiva (con la clave y las contraseñas enmascaradas) y hace una
+petición real al chat y otra a los embeddings. Si algo falla, dice qué cambiar: el
+certificado no es de confianza (falta la CA corporativa), el proxy pide credenciales (407),
+el servidor pide certificado de cliente, la clave no vale, la URL no acaba en `/v1`, o no
+conecta (quizá el gateway va sin proxy: `CURSO_NO_PROXY`).
+
+Cuando el servidor rechaza por el cupo (409 o 429), se espera lo que diga (`Retry-After`) o
+cada vez más, hasta `CURSO_MAX_WAIT`; esas esperas no cuentan como reintentos. Los 5xx y los
+cortes se reintentan 5 veces; los errores de certificado o de credenciales del proxy, no.
 
 Para desarrollar sin gastar cupo del gateway, el perfil `openrouter` usa el mismo gemma-4
 26b en OpenRouter (y `baai/bge-m3` para los embeddings):
@@ -73,7 +101,8 @@ Con OpenRouter, solo los datos inventados de `datos/`: es un servicio externo.
 python scripts/check_gateway.py
 ```
 
-Unas 25 peticiones (un minuto con el cupo de 28). Deja el resultado en
+Antes, la configuración efectiva (como `python -m curso.llm`). Unas 25 peticiones (un
+minuto con el cupo de 28). Deja el resultado en
 `resultados/<perfil>.md`. El de OpenRouter ya está en `resultados/openrouter.md`; el del
 gateway hay que sacarlo desde la red de la empresa.
 

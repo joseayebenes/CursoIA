@@ -23,15 +23,15 @@ gemma-4 con un coste por token parecido.
 
 | | gemma-4-26b | gpt-oss-120b | devstral-2512 |
 |---|---|---|---|
-| `logprobs` | sí | no | no |
+| `logprobs` | sí | según el proveedor; tokens de su formato interno (`<\|message\|>`) | no |
 | `n` > 1 | no | no | no |
 | herramientas | sí | sí | sí |
 | `json_schema` | sí | sí | sí |
 | `reasoning_effort: none` | sí | **400**: el razonamiento es obligatorio | se acepta, pero lo ignora |
 
-- **gemma-4** completa "The software shall delete a track within" con un 3 (85 %), un 1
-  (8 %) y un 2 (2 %). Buen gancho: sin contexto, la cifra más probable no es la del
-  requisito.
+- **gemma-4** completa "The software shall delete a track within" con un 3: un 85 % en una
+  ejecución, un 100 % en otra (OpenRouter reparte entre proveedores). El 2 del requisito,
+  un 2 % o nada. Buen gancho: sin contexto, la cifra más probable no es la del requisito.
 - **gpt-oss-120b** escribe "2 seconds" con espacios estrechos de Unicode (` `): quien
   compare cadenas lo tiene que saber.
 - **devstral** empieza "Alright, let's tackle…": razona dentro de la respuesta aunque se le

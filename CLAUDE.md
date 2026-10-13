@@ -19,8 +19,12 @@ Siguiente: **el notebook**, siguiendo `docs/guion.md` bloque a bloque. Antes, si
 - **No se nombra ninguna herramienta interna** que no aparezca ya en este repositorio: el
   curso prepara el terreno para presentar una más adelante, y tiene que entenderse solo.
   Lo que hay que saber de ella está en las notas privadas (abajo), que no se versionan.
-- **Toda llamada al modelo pasa por `curso.llm`** (`chat`, `ask`, `embed`): caché, límite
-  de peticiones, certificados y proxy. Nada de clientes sueltos en el notebook.
+- **Toda llamada al modelo pasa por `curso.llm`** (`chat`, `ask`, `embed`, o `send` para
+  una petición en vivo): caché, cupo, certificados y proxy. Nada de clientes sueltos.
+- **La API de la empresa solo se alcanza con el proxy y el certificado corporativos.**
+  `curso/llm.py` cubre proxy con credenciales y `NO_PROXY`, la CA del sistema o un PEM,
+  certificado de cliente, esperas con 409/429 y el diagnóstico de cada error. No quitar
+  nada de eso, y probar cualquier cambio de red con `python -m curso.llm`.
 - **Para desarrollar y probar, el perfil `openrouter`** (gemma-4 26b; embeddings
   `baai/bge-m3`), solo con los datos de `datos/`. La sesión usa el perfil `gateway`.
 - **Secretos solo por entorno.** Nunca una clave en un fichero, en una celda ni en una

@@ -17,6 +17,8 @@ Lo que se decidió al preparar el curso y por qué, para no volver a discutirlo.
 | **Una lista de límites que crece durante la sesión** | Al final se clasifica en tres columnas, y la clasificación ya es la hoja de ruta. |
 | **Honestidad sobre Ada y sobre los fallos** | Un equipo Ada desconfiado se cree más a quien le enseña los fallos. El experimento del servidor de sockets es el mejor material. |
 | **Dependencias mínimas** | Los puestos son Windows y quizá sin acceso a pip. `openai`, `truststore`, `numpy`, `matplotlib` e `ipykernel`. BM25 con FTS5 de `sqlite3`, PCA con `numpy`. |
+| **La red de la empresa, como en las demás herramientas** | La API solo se alcanza con el proxy (con credenciales y `NO_PROXY`) y la CA corporativa, a veces con certificado de cliente, y rechaza con 409 o 429 al pasar el cupo. `curso/llm.py` cubre todo eso y dice qué cambiar cuando falla. |
+| **Sin `VERIFY_X509_STRICT` con una CA en PEM** | Python 3.13 rechaza los certificados sin Authority Key Identifier, como los que emiten algunos proxies que inspeccionan TLS. Se siguen verificando la cadena y el nombre del servidor, como hacen `curl` y el almacén del sistema. |
 | **Secretos solo por entorno** | El notebook se comparte después; la clave no puede acabar en él. |
 | **El notebook se comparte después, no antes** | Así nadie se pelea con la instalación durante la sesión. |
 | **Código en inglés, textos en español** | Como en el resto de proyectos del equipo. |
