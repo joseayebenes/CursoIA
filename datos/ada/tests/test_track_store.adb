@@ -17,7 +17,7 @@ procedure Test_Track_Store is
       end if;
    end Check;
 
-   --  Verifies: SRS-0004
+   --  Req: SRS-0004
    procedure Test_Stale_Track_Is_Purged is
       Id : Track_Id;
       Ok : Boolean;
@@ -30,7 +30,7 @@ procedure Test_Track_Store is
       Check (not Track_Store.Exists (Id), "track deleted at the timeout");
    end Test_Stale_Track_Is_Purged;
 
-   --  Verifies: SRS-0006
+   --  Req: SRS-0006
    procedure Test_Operator_Delete is
       Id : Track_Id;
       Ok : Boolean;

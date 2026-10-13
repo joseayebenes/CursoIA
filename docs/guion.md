@@ -127,7 +127,8 @@ texto sin memoria.
 que el modelo acierte.
 
 1. "¿Qué código implementa SRS-0004 y qué prueba lo verifica?" no es una pregunta para un
-   modelo: se leen los `--  Req:` y `--  Verifies:` con una expresión regular.
+   modelo: se leen los `--  Req:` de `src/` (implementa) y de `tests/` (verifica) con una
+   expresión regular.
 2. Los `with` y las llamadas entre subprogramas forman un grafo (un `dict`).
 3. **Impacto:** "si cambio `Logger.Log`, ¿qué requisitos toco?": sus llamadores
    (`Track_Store.Create`, `Delete`, `Alarms.Check`, `Tms_Main`) y los requisitos de cada uno.

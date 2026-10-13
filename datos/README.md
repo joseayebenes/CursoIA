@@ -17,8 +17,7 @@ Todo es inventado, así que se puede mandar a cualquier modelo.
 
 - `--  Req: SRS-0004` en la línea anterior a un subprograma: el subprograma implementa ese
   requisito (o esos, separados por comas).
-- `--  Verifies: SRS-0004` en la línea anterior a un procedimiento de prueba: la prueba lo
-  verifica.
+- El mismo comentario en un procedimiento de `tests/`: la prueba verifica el requisito.
 
 Con eso, y con los `with` y las llamadas entre paquetes, se construye el grafo del bloque 5
 del guion sin preguntar nada al modelo.

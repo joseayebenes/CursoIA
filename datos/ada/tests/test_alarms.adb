@@ -24,7 +24,7 @@ procedure Test_Alarms is
    function Track_At (Id : Track_Id; Pos : Position) return Track is
      ((Id => Id, Target => 7, Pos => Pos, Last_Report => 0.0, In_Use => True));
 
-   --  Verifies: SRS-0007
+   --  Req: SRS-0007
    procedure Test_Alarm_On_Entry is
    begin
       Alarms.Check (Track_At (5, Outside));
@@ -33,7 +33,7 @@ procedure Test_Alarms is
       Check (HMI.Alarm_Active (5), "alarm when entering a zone");
    end Test_Alarm_On_Entry;
 
-   --  Verifies: SRS-0010
+   --  Req: SRS-0010
    procedure Test_Alarm_Kept_Until_Acknowledged is
    begin
       Alarms.Check (Track_At (5, Inside));
