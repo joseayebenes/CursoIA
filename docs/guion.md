@@ -170,7 +170,8 @@ en `limitaciones.md`.
 
 ## Antes de la sesión
 
-1. `scripts/check_gateway.py` contra el gateway: qué admite cada modelo y sus nombres
+1. `python -m curso.llm` desde la red de la empresa: proxy, certificados y clave. Después,
+   `scripts/check_gateway.py` contra el gateway: qué admite cada modelo y sus nombres
    exactos. Ajustar las demos que dependan de `logprobs`, `n` y `reasoning_effort`.
 2. Comprobar las trampas de embeddings con `embeddinggemma` (bloque 3, puntos 4 y 5).
 3. Darle a gpt-oss-120b el mismo encargo del servidor Ada (ver `modelos.md`).
