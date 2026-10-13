@@ -1,0 +1,16 @@
+# Entorno
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+
+# Notas del presentador: no se comparten (ver CLAUDE.md)
+privado/
+
+# Caché de las pruebas con OpenRouter: la de la sesión es la del gateway
+cache/openrouter/
+
+# Compilación del proyecto Ada de ejemplo
+datos/ada/obj/
+datos/ada/bin/
