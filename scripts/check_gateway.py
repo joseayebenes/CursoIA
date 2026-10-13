@@ -19,7 +19,6 @@ import json
 import math
 import re
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -60,11 +59,8 @@ REQUIREMENT_SCHEMA = {
 
 
 def call(**request):
-    """One live request: the response and the seconds it took."""
-    llm.limiter.wait(llm.settings().rpm)
-    t0 = time.perf_counter()
-    response = llm.client().chat.completions.create(**request)
-    return response, time.perf_counter() - t0
+    """One live request (never from the cache): the response and the seconds it took."""
+    return llm.send(lambda: llm.client().chat.completions.create(**request))
 
 
 def reasoning_tokens(response) -> int:
@@ -170,7 +166,7 @@ def run(check, model) -> dict:
     except openai.APIStatusError as e:
         ok, note = False, f"HTTP {e.status_code}: {e.message}"
     except Exception as e:  # noqa: BLE001 - a failed check must not stop the others
-        ok, note = False, f"{type(e).__name__}: {e}"
+        ok, note = False, llm.diagnose(e) or f"{type(e).__name__}: {e}"
     return {"ok": ok, "note": " ".join(str(note).split())[:200]}
 
 
@@ -186,12 +182,13 @@ def check_embeddings() -> dict:
              "Receta de tortilla de patatas",
              "SRS-0004", *requirements.values()]
     try:
-        llm.limiter.wait(s.rpm)
-        response = llm.client().embeddings.create(model=s.embed_model, input=texts)
+        response, _ = llm.send(lambda: llm.client().embeddings.create(model=s.embed_model,
+                                                                      input=texts))
     except openai.APIStatusError as e:
         return {"model": s.embed_model, "ok": False, "note": f"HTTP {e.status_code}: {e.message}"}
     except Exception as e:  # noqa: BLE001
-        return {"model": s.embed_model, "ok": False, "note": f"{type(e).__name__}: {e}"}
+        return {"model": s.embed_model, "ok": False,
+                "note": llm.diagnose(e) or f"{type(e).__name__}: {e}"}
     v = np.array([d.embedding for d in sorted(response.data, key=lambda d: d.index)])
     v /= np.linalg.norm(v, axis=1, keepdims=True)
     question = v[0] @ v[1:4].T
@@ -247,11 +244,16 @@ def main(argv: list[str]) -> int:
     result = {"profile": s.profile,
               "date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
               "offered": None, "models": {}}
+    print(llm.describe())
     try:
         offered = llm.models()
-    except Exception as e:  # noqa: BLE001
-        print(f"could not list the models: {e}", file=sys.stderr)
-        offered = []
+    except openai.NotFoundError:
+        offered = []                       # some servers do not list their models
+    except Exception as e:  # noqa: BLE001 - without a connection there is nothing to check
+        print(f"\ncannot reach the server: {type(e).__name__}: {str(e)[:200]}", file=sys.stderr)
+        if llm.diagnose(e):
+            print(f"  -> {llm.diagnose(e)}", file=sys.stderr)
+        return 1
     if s.profile == "gateway":
         result["offered"] = offered
         print("models offered:", ", ".join(offered) or "(none listed)")
