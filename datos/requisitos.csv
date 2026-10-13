@@ -1,0 +1,17 @@
+id,module,heading,text,verification
+SRS-0001,SRS_TMS,1 Sensor input,The software shall accept track reports from the primary sensor at a rate of up to 10 reports per second per target.,Test
+SRS-0002,SRS_TMS,1 Sensor input,The software shall accept track reports from the secondary sensor.,Test
+SRS-0003,SRS_TMS,2 Track lifecycle,The software shall create a new track within 1 s of receiving the first report of an unknown target.,Test
+SRS-0004,SRS_TMS,2 Track lifecycle,The software shall delete a track within 2 s when no report has been received for that track for 10 s.,Test
+SRS-0005,SRS_TMS,2 Track lifecycle,The software shall update the position of a track within 1 s of receiving a new report for it.,Test
+SRS-0006,SRS_TMS,2 Track lifecycle,The software shall delete a track within 2 s of an operator deletion request.,Test
+SRS-0007,SRS_TMS,3 Alarms,The software shall raise an alarm on the HMI within 500 ms when a track enters a restricted zone.,Test
+SRS-0008,SRS_TMS,4 Event log,The software shall record every track deletion in the event log.,Test
+SRS-0009,SRS_TMS,4 Event log,The software shall record every alarm in the event log.,Test
+SRS-0010,SRS_TMS,3 Alarms,The software shall keep an alarm displayed on the HMI until the operator acknowledges it.,Test
+SRS-0011,SRS_TMS,5 Capacity,The software shall manage at least 1000 simultaneous tracks.,Analysis
+SRS-0012,SRS_TMS,5 Capacity,The software shall restore the tracks of the last 60 s after a restart.,Test
+SRS-0040,SRS_TMS,6 HMI interface,The software shall send each new or updated track to the HMI in a TRACK message.,Test
+SRS-0041,SRS_TMS,6 HMI interface,The software shall send each alarm to the HMI in an ALARM message.,Test
+SRS-0042,SRS_TMS,6 HMI interface,The software shall send a HEARTBEAT message to the HMI every 1 s.,Test
+SRS-0044,SRS_TMS,6 HMI interface,The software shall send a TRACK_DELETED message to the HMI when a track is deleted.,Test
