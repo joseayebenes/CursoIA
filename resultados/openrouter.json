@@ -1,16 +1,16 @@
 {
   "profile": "openrouter",
-  "date": "2026-10-13 21:33 UTC",
+  "date": "2026-10-13 21:48 UTC",
   "offered": null,
   "models": {
     "google/gemma-4-26b-a4b-it": {
       "plain answer": {
         "ok": true,
-        "note": "'OK', 0.4 s, 20+2 tokens"
+        "note": "'OK', 0.6 s, 20+2 tokens"
       },
       "logprobs": {
         "ok": true,
-        "note": "first token '3'; alternatives: '3' 1.00, '2' 0.00, '1' 0.00, '6' 0.00, '5' 0.00"
+        "note": "first token '3'; alternatives: '3' 1.00, '2' 0.00, '1' 0.00, '5' 0.00, '7' 0.00"
       },
       "n = 3": {
         "ok": false,
@@ -26,21 +26,21 @@
       },
       "reasoning none": {
         "ok": true,
-        "note": "'12', 0 reasoning tokens, 0.6 s"
+        "note": "'12', 0 reasoning tokens, 0.4 s"
       },
       "reasoning low": {
         "ok": true,
-        "note": "'12', 267 reasoning tokens, 8.8 s"
+        "note": "'12', 375 reasoning tokens, 5.0 s"
       }
     },
     "openai/gpt-oss-120b": {
       "plain answer": {
         "ok": true,
-        "note": "'OK', 4.1 s, 61+66 tokens, reasons by default (59 reasoning tokens)"
+        "note": "'OK', 2.2 s, 74+59 tokens, reasons by default (54 reasoning tokens)"
       },
       "logprobs": {
-        "ok": false,
-        "note": "no logprobs in the answer ''"
+        "ok": true,
+        "note": "first token '<|message|>'; alternatives: '<|message|>' 1.00, ' ' 0.00, '<|constrain|>' 0.00, '<|start|>' 0.00, ' Biography' 0.00"
       },
       "n = 3": {
         "ok": false,
@@ -60,13 +60,13 @@
       },
       "reasoning low": {
         "ok": true,
-        "note": "'12', 40 reasoning tokens, 14.7 s"
+        "note": "'12', 56 reasoning tokens, 1.0 s"
       }
     },
     "mistralai/devstral-2512": {
       "plain answer": {
         "ok": true,
-        "note": "'OK', 0.4 s, 22+2 tokens"
+        "note": "'OK', 0.3 s, 22+2 tokens"
       },
       "logprobs": {
         "ok": false,
@@ -86,11 +86,11 @@
       },
       "reasoning none": {
         "ok": true,
-        "note": "\"Alright, let's tackl\", 0 reasoning tokens, 4.9 s"
+        "note": "\"Alright, let's tackl\", 0 reasoning tokens, 5.1 s"
       },
       "reasoning low": {
         "ok": true,
-        "note": "\"Alright, let's tackl\", 0 reasoning tokens, 5.0 s"
+        "note": "\"Alright, let's tackl\", 0 reasoning tokens, 4.7 s"
       }
     }
   },
