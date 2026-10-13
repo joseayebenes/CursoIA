@@ -1,0 +1,7 @@
+# Lo justo para el notebook: se tiene que poder instalar en un puesto Windows sin red
+# (pip download en otro equipo y pip install --no-index --find-links).
+openai>=1.60,<3
+truststore>=0.9,<1
+numpy>=1.26,<3
+matplotlib>=3.8,<4
+ipykernel>=6.29,<8
