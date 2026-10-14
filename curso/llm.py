@@ -12,6 +12,8 @@ Configuration, from the environment only (the key and the passwords never go in 
     CURSO_BASE_URL     the API URL, ending in /v1 (preset for openrouter)
     CURSO_API_KEY      the API key (with openrouter, OPENROUTER_API_KEY also works)
     CURSO_MODEL        the chat model (gateway: gemma-4)
+    CURSO_MODELS       the chat models to compare, comma-separated (gateway: gemma-4,
+                       gpt-oss-120b, devstral)
     CURSO_EMBED_MODEL  the embeddings model (gateway: embeddinggemma)
 
   Corporate network
@@ -70,9 +72,12 @@ from openai.types.chat import ChatCompletion
 ROOT = Path(__file__).resolve().parent.parent
 
 PROFILES = {
-    "gateway": {"base_url": "", "model": "gemma-4", "embed_model": "embeddinggemma"},
+    "gateway": {"base_url": "", "model": "gemma-4", "embed_model": "embeddinggemma",
+                "models": "gemma-4,gpt-oss-120b,devstral"},
     "openrouter": {"base_url": "https://openrouter.ai/api/v1",
-                   "model": "google/gemma-4-26b-a4b-it", "embed_model": "baai/bge-m3"},
+                   "model": "google/gemma-4-26b-a4b-it", "embed_model": "baai/bge-m3",
+                   "models": "google/gemma-4-26b-a4b-it,openai/gpt-oss-120b,"
+                             "mistralai/devstral-2512"},
 }
 
 MAX_RETRIES = 5
@@ -92,6 +97,7 @@ class Settings:
     api_key: str
     model: str
     embed_model: str
+    models: tuple[str, ...]
     proxy: str
     no_proxy: str
     ca_cert: str
@@ -124,6 +130,8 @@ def settings() -> Settings:
         api_key=_env(*key_names),
         model=_env("CURSO_MODEL", default=preset["model"]),
         embed_model=_env("CURSO_EMBED_MODEL", default=preset["embed_model"]),
+        models=tuple(m.strip() for m in _env("CURSO_MODELS", default=preset["models"])
+                     .split(",") if m.strip()),
         proxy=_env("CURSO_PROXY", "HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy"),
         no_proxy=_env("CURSO_NO_PROXY", "NO_PROXY", "no_proxy", default="localhost,127.0.0.1,::1"),
         ca_cert=_env("CURSO_CA_CERT", "SSL_CERT_FILE", "REQUESTS_CA_BUNDLE", default="system"),
@@ -290,13 +298,23 @@ def describe() -> str:
         f"profile {s.profile}: {_mask_url(s.base_url) or '(CURSO_BASE_URL not set)'}",
         f"  chat {s.model}, embeddings {s.embed_model or '-'}, "
         f"key {_mask_key(s.api_key) or 'NOT SET'}",
+        f"  to compare: {', '.join(s.models)}",
         f"  proxy: {_mask_url(proxy) if proxy else 'direct'}"
         + (f" (configured {_mask_url(s.proxy)}, but the host is in no_proxy)"
            if s.proxy and not proxy else ""),
         f"  TLS: {tls}" + (f"; client certificate {s.client_cert}" if s.client_cert else ""),
         f"  {s.rpm:g} requests/min; on 409/429 waits up to {s.max_wait / 60:g} min; "
-        f"timeout {s.timeout:g} s; cache {s.cache} in {s.cache_dir}",
+        f"timeout {s.timeout:g} s; cache {s.cache} in {_shown_path(s.cache_dir)}/",
     ])
+
+
+def _shown_path(path: Path) -> str:
+    """A path relative to the repository when it is inside it: it ends up in the notebook
+    outputs, and the user's home folder has no business there."""
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path)
 
 
 # --- request limit and retries -----------------------------------------------------------

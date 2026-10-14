@@ -36,6 +36,13 @@ gemma-4 con un coste por token parecido.
   compare cadenas lo tiene que saber.
 - **devstral** empieza "Alright, let's tackle…": razona dentro de la respuesta aunque se le
   pida `none`.
+- **Revisar `alarms.adb`** (el notebook, bloque 2): solo con el código, ninguno de los tres ve
+  el fallo de los identificadores reutilizados; gemma-4 y devstral echan en falta un aviso al
+  salir de la zona y gpt-oss-120b da cinco fallos genéricos. Con la sección 3 del diseño
+  delante, los tres lo encuentran.
+- **El agente del notebook** (bloque 6, gemma-4): sin razonamiento, 5 herramientas, no abre
+  `tms_main.adb` y se contradice; con razonamiento `low` y temperatura 1,0, 10 herramientas y
+  11 peticiones (unos 50 s), y encuentra el fallo sembrado 1.
 
 ## Lo medido con agentes (antes del curso)
 
