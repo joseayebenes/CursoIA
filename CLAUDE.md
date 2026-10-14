@@ -8,17 +8,19 @@ prefiere gemma-4 por verlo el más capaz.
 ## Estado
 
 Hecho: el guion (`docs/guion.md`), las decisiones, los modelos, las limitaciones, el
-proyecto Ada inventado con sus trampas (`datos/`), las ayudas (`curso/`) y la comprobación
-de modelos (`scripts/check_gateway.py`, ya ejecutada con OpenRouter).
+proyecto Ada inventado con sus trampas (`datos/`), las ayudas (`curso/`: `llm`, `data` y
+`show`), la comprobación de modelos (`scripts/check_gateway.py`, ya ejecutada con OpenRouter)
+y **el notebook** (`curso-ia.ipynb`), ejecutado entero con OpenRouter
+(`scripts/run_notebook.py`) y con cada salida revisada. Lo aprendido, al final de
+`docs/guion.md`.
 
-Borrador del notebook en `borrador/`: `cells.py` (las celdas), `run.py` (las ejecuta como un kernel y
-guarda las salidas en `cells.json`) y `build.py` (la vista previa en HTML). Ejecutado con
-OpenRouter; lo aprendido está al final de `docs/guion.md`. Las ayudas que usa de `curso.show`
-(`table`, `bars`, `scatter`, `side_by_side`, `graph`, `tool`, `step`, `Limits`) están simuladas en
-`run.py`: faltan en `curso/`.
+El notebook es la fuente: se edita en Jupyter o VS Code. Sus textos comentan las salidas de
+OpenRouter.
 
-Siguiente: **el notebook de verdad** (`.ipynb`), a partir del borrador y de `docs/guion.md`. Antes, si se puede,
-`check_gateway.py` contra el gateway (lo ejecuta el presentador desde la red de la empresa).
+Siguiente: el gateway, desde la red de la empresa (lo ejecuta el presentador):
+`python -m curso.llm`, `scripts/check_gateway.py` y el notebook entero con
+`CURSO_CACHE=refresh`, releyendo cada salida y el texto que la comenta. Ver «Antes de la
+sesión» en `docs/guion.md`.
 
 ## Reglas
 

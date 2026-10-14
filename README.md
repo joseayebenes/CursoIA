@@ -12,18 +12,17 @@ demos usan la API corporativa.
 
 | Carpeta | Qué tiene |
 |---|---|
+| `curso-ia.ipynb` | el notebook de la sesión |
 | `docs/guion.md` | el guion de la sesión, bloque a bloque: **empieza por aquí** |
 | `docs/decisiones.md` | qué se decidió y por qué |
 | `docs/modelos.md` | gemma-4, gpt-oss-120b y devstral: lo que son y lo medido |
 | `docs/limitaciones.md` | el bloque final: limitaciones, hacia dónde ir, el semáforo |
 | `datos/` | el proyecto inventado y sus trampas (ver `datos/README.md`) |
-| `curso/` | ayudas del notebook: el cliente del modelo con caché (`llm`) y los datos (`data`) |
+| `curso/` | ayudas del notebook: el cliente del modelo con caché (`llm`), los datos (`data`) y las tablas, figuras y la lista de límites (`show`) |
 | `scripts/check_gateway.py` | qué admite cada modelo del servidor |
+| `scripts/run_notebook.py` | ejecuta el notebook entero y guarda sus salidas |
 | `resultados/` | lo que sale de `check_gateway.py` |
-| `borrador/` | el notebook en borrador: las celdas (`cells.py`), su ejecución real (`run.py` → `cells.json`) y la vista previa en HTML (`build.py`) |
 | `cache/` | las respuestas guardadas de los modelos (se crea al usarlo) |
-
-El notebook está en borrador (`borrador/`); la vista previa, en `borrador/notebook-curso-ia.html`.
 
 ## Preparar el entorno
 
@@ -96,14 +95,30 @@ export OPENROUTER_API_KEY="<clave de OpenRouter>"
 
 Con OpenRouter, solo los datos inventados de `datos/`: es un servicio externo.
 
+## El notebook
+
+`curso-ia.ipynb`, en la raíz del repositorio para que encuentre `curso/`. Se abre con VS Code
+(extensión de Jupyter, eligiendo el Python de `.venv`) o con JupyterLab, si está instalado.
+
+Para ejecutarlo entero desde la terminal y guardar las salidas, como «Run All» y «Save»:
+
+```bash
+python scripts/run_notebook.py
+```
+
+A diferencia de «Run All», no se para en un error: ejecuta todas las celdas y al final dice
+cuáles fallaron. Las salidas que tiene ahora son de OpenRouter; el día antes de la sesión se
+sustituyen por las del gateway (`docs/guion.md`, «Antes de la sesión»).
+
 ## Qué admite cada modelo
 
 ```bash
 python scripts/check_gateway.py
 ```
 
-Antes, la configuración efectiva (como `python -m curso.llm`). Unas 25 peticiones (un
-minuto con el cupo de 28). Deja el resultado en
+Antes, la configuración efectiva (como `python -m curso.llm`). Prueba los modelos de
+`CURSO_MODELS` (por defecto, los tres del perfil: los mismos que compara el notebook). Unas 25
+peticiones (un minuto con el cupo de 28). Deja el resultado en
 `resultados/<perfil>.md`. El de OpenRouter ya está en `resultados/openrouter.md`; el del
 gateway hay que sacarlo desde la red de la empresa.
 

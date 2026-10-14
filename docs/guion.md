@@ -1,7 +1,8 @@
 # Guion de la sesión
 
 Sesión online de 2 horas para un equipo que desarrolla sobre todo en Ada. La pregunta de
-fondo: **¿qué puede hacer nuestra IA por nosotros, dónde no llega y qué haría falta?**
+fondo: **¿qué puede hacer nuestra IA por nosotros, dónde no llega y qué haría falta?** El
+notebook de la sesión es `curso-ia.ipynb`, y sigue este guion bloque a bloque.
 
 Tres actos:
 
@@ -78,19 +79,23 @@ texto sin memoria.
 - **Razonamiento:** el mismo problema con `reasoning_effort` `none` y `low`: tokens de
   razonamiento, tiempo y respuesta. Los tokens de razonamiento cuentan en `max_tokens`.
 - **La misma tarea a los tres:** "¿Ves algún fallo en `alarms.adb`?" (fallo sembrado 2, ver
-  `datos/README.md`), con `tms_sdd.md` sección 3 como contexto. Respuestas lado a lado, con
-  tiempo y tokens. Pregunta al chat: *¿cuál creéis que lo encuentra?*
-- **A la lista:** lo que salga de la comparación (nuestros modelos).
+  `datos/README.md`). Respuestas lado a lado, con el tiempo. Pregunta al chat: *¿cuál creéis
+  que lo encuentra?* Primero solo con el código: ninguno, y cada uno señala otro fallo que
+  suena razonable. Después con la sección 3 de `tms_sdd.md` delante (los identificadores se
+  reutilizan): los tres. Lo que decide no es el modelo, es lo que tiene delante.
+- **A la lista:** "Sin el contexto del sistema no ve el fallo, y señala otros que no lo son"
+  (cualquier modelo).
 
 ## 3. Que sepa lo nuestro (min 32–55)
 
 **Objetivo:** que entiendan cómo se le da al modelo el conocimiento que no tiene.
 
 1. **Pegarlo todo.** Todo el proyecto (requisitos, diseño, manual) en el prompt y la
-   pregunta del hilo. Con 200k de contexto cabe y acierta. Se enseñan `prompt_tokens` y el
-   tiempo. Después, la misma pregunta con solo 5 fragmentos: misma respuesta, una fracción
-   de tokens y de tiempo. Y la cuenta para un proyecto real (número de documentos × páginas
-   × tokens por página, que se mide aquí): **no es que no quepa, es que no escala.**
+   pregunta del hilo. Con 200k de contexto cabe y contesta, pero con todo delante no ve la
+   contradicción entre el manual y el diseño. Se enseñan `prompt_tokens` y el tiempo. Y la
+   cuenta para un proyecto real (número de documentos × páginas × tokens por página, que se
+   mide aquí): no cabe, y aunque cupiera, **no escala**. En el bloque 4, la respuesta con
+   fuentes gasta una fracción de esos tokens.
 2. **Trocear.** Por tamaño fijo frente a por sección (los `##` del Markdown); con un tamaño
    elegido para que un trozo corte por la mitad la frase de la purga (SDD 4.4). El código,
    por subprograma, no por caracteres.
@@ -118,7 +123,9 @@ texto sin memoria.
    modelo con dos cifras?* Con fuentes, debería dar las dos y decir de dónde sale cada una.
 3. **"No lo sé".** "¿Qué cifrado usan los mensajes al HMI?": no está en ninguna parte.
 4. **Verificar un requisito.** SRS-0012 (recuperar las trazas tras un reinicio) contra los
-   documentos: el diseño lo deja abierto y el manual dice que la pantalla aparece vacía.
+   documentos: el diseño lo deja abierto y el manual dice que la pantalla aparece vacía. Se
+   busca con la pregunta reescrita y con 8 fuentes: el requisito está en inglés, el manual en
+   español, y hay que mirar en los dos documentos.
 - **A la lista:** "Si la búsqueda no trae el fragmento, la respuesta falla" (técnica).
 
 ## 5. Lo que no es semántico (min 78–88)
@@ -145,16 +152,18 @@ que el modelo acierte.
    bloques 3 a 5). El bucle: el modelo pide una herramienta, se ejecuta, se le devuelve el
    resultado, y así hasta que responde o se acaban los pasos. Se enseña la traza de cada
    paso.
-2. **"¿Cumple el código SRS-0004?"** Con suerte, lee el requisito, el diseño,
-   `track_store.adb` y `tms_main.adb` y encuentra el fallo sembrado 1 (la purga solo corre
-   cuando llega un informe). La prueba de SRS-0004 pasa: **la prueba pasa y el requisito no
-   se cumple.**
+2. **"¿Cumple el código SRS-0004?"** Dos veces. Sin razonamiento, se acerca (cumplir los 2 s
+   depende del bucle principal) pero no abre `tms_main.adb`, y se contradice. Con la
+   configuración que funcionó escribiendo Ada (razonamiento `low`, temperatura 1,0, hasta 15
+   pasos) lee `tms_main.adb` y `sensor_input.adb` y encuentra el fallo sembrado 1 (la purga
+   solo corre cuando llega un informe), y explica por qué la prueba no lo ve: **la prueba
+   pasa y el requisito no se cumple.** A cambio, 11 peticiones.
 3. **MCP:** las mismas herramientas, ofrecidas a cualquier editor (VS Code, OpenCode). Con un
    diagrama basta.
 4. **El experimento del servidor Ada** (`limitaciones.md`): lo que funcionó y lo que no.
-- **A la lista:** bucles con encargos amplios, "compila" sin compilar, adapta el test al
-  código (nuestros modelos); un agente gasta decenas de peticiones por tarea frente a un
-  cupo de 28 por minuto (infraestructura).
+- **A la lista:** sin razonar no comprueba lo que sospecha; bucles con encargos amplios,
+  "compila" sin compilar, adapta el test al código (nuestros modelos); un agente gasta
+  decenas de peticiones por tarea frente a un cupo de 28 por minuto (infraestructura).
 
 ## 7. Límites y hacia dónde ir (min 103–120)
 
@@ -168,29 +177,49 @@ en `limitaciones.md`.
 4. El semáforo: verde, ámbar, rojo.
 5. El diagrama de lo construido en la sesión.
 
-## Lo visto en el borrador
+## Lo visto al ejecutar el notebook
 
-El borrador (`borrador/`) se ejecutó entero con OpenRouter el 14 de octubre (gemma-4 26b;
-`bge-m3` para los embeddings). Lo que cambia el guion:
+El notebook se ejecutó entero con OpenRouter el 14 de octubre (gemma-4 26b; `bge-m3` para los
+embeddings), primero como borrador y después como `.ipynb`. **Los textos que comentan cada
+salida describen esta ejecución**: con el gateway hay que releerlos.
 
 - **Gancho:** con un prompt de sistema de «asistente del proyecto», se inventa «24 horas» y
   una «Trace Lifecycle Test». (Sin ese prompt no se ha probado.)
+- **Tokens:** `SRS-0004` son 6 tokens, y con `logprobs` se ven: `SRS | - | 0 | 0 | 0 | 4`. La
+  frase en español, 14 frente a 11 en inglés. Con `max_tokens=20` se corta a media frase
+  (`finish_reason: length`).
 - **Siguiente token:** «3» un 72 %, «1» un 15 %, «2» (el del requisito) un 4 %.
-- **Tokens:** `SRS-0004` son 6 tokens; la frase en español, 14 frente a 11 en inglés.
-- **Los tres modelos encuentran el fallo de `alarms.adb`** con la sección 3 del diseño
-  delante (que dice que los identificadores se reutilizan). La demo enseña estilos y tiempos,
-  no quién acierta. Para que se distingan, quitar esa sección del contexto.
-- **Pegarlo todo** contesta «13 s» (10 + los 3 del manual) y no ve la contradicción.
+- **Los tres modelos y `alarms.adb`:** sin la sección 3 del diseño, ninguno encuentra el fallo
+  (gemma-4 y devstral echan en falta un aviso al salir de la zona; gpt-oss-120b da cinco
+  fallos genéricos); con ella, los tres.
+- **Pegarlo todo** contesta «13 s» (10 + los 3 del manual) y no ve la contradicción. Son 3.509
+  tokens: unos 830 por página, así que 200 documentos de 50 páginas serían 8 millones.
+- **Trocear a 1200 caracteres** corta el diseño en «removal from the disp|lay»: la cifra
+  (1,1 s) queda en un trozo y de qué se habla, en el anterior.
+- **Coseno:** «Se borra la traza» y «The track is deleted», 0,79; con «Se dispara una alarma»,
+  0,53.
 - **La híbrida deja fuera el diseño** para la pregunta en español: el manual sale arriba en
   dos de las tres listas. Hace falta **reescribir la pregunta** antes de buscar, y **con
   glosario**: sin él, tradujo «traza» por *trace* (de un log). Con glosario avisa de que el
   manual (3 s) y el diseño (1,1 s) no cuadran, pero trae SRS-0006 en vez de SRS-0004: la
-  trampa de los requisitos casi iguales funciona sola.
+  trampa de los requisitos casi iguales funciona sola. Con fuentes, 1.045 tokens frente a los
+  3.509 de pegarlo todo.
 - **«¿Qué cifrado…?»:** «No lo sé.» Bien.
-- **Agente:** lee el requisito, la traza y `track_store.adb`, dice que cumplir los 2 s
-  depende del bucle principal, pero no abre `tms_main.adb`; empieza con «no cumple» y acaba
-  con «es funcionalmente correcto». Buen material para el bloque. Falta probarlo con
-  `reasoning_effort: low` y temperatura 1,0, la configuración que funcionó escribiendo Ada.
+- **Verificar SRS-0012:** buscando con el texto del requisito tal cual, no llega el manual y el
+  modelo dice que no tiene información de él. Con la pregunta reescrita, el manual sale el
+  séptimo; con 8 fuentes contesta «NO», citando el diseño (OI-2) y el manual (la pantalla
+  aparece vacía). Al reescribir, el modelo a veces pone las consultas entre comillas:
+  `rewrite` las quita.
+- **JSON sin esquema:** lo envuelve en texto y en un bloque ```` ```json ````, con campos
+  inventados, y `json.loads` falla.
+- **Agente sin razonamiento:** lee el requisito, la traza y `track_store.adb`, dice que cumplir
+  los 2 s depende del bucle principal, pero no abre `tms_main.adb`; empieza con «no cumple» y
+  acaba con «es funcionalmente correcto».
+- **Agente con razonamiento `low` y temperatura 1,0:** 10 herramientas (también pide
+  `src/main.adb`, que no existe, y sigue con la lista que le devuelve la herramienta), 11
+  peticiones y unos 50 s. Con 10 pasos se quedaba sin pasos; con 15, encuentra el fallo de
+  `tms_main.adb` y explica por qué la prueba pasa. Con temperatura 1,0 es una muestra: en el
+  gateway puede salir otra cosa.
 
 ## Antes de la sesión
 
@@ -199,8 +228,12 @@ El borrador (`borrador/`) se ejecutó entero con OpenRouter el 14 de octubre (ge
    exactos. Ajustar las demos que dependan de `logprobs`, `n` y `reasoning_effort`.
 2. Comprobar las trampas de embeddings con `embeddinggemma` (bloque 3, puntos 4 y 5).
 3. Darle a gpt-oss-120b el mismo encargo del servidor Ada (ver `modelos.md`).
-4. Ejecutar el notebook entero contra el gateway con `CURSO_CACHE=refresh` y revisar cada
-   salida: si una demo no enseña lo que debe, cambiar la pregunta, no maquillar la salida.
-5. Exportar el notebook ejecutado a HTML, por si falla todo.
+4. Ejecutar el notebook entero contra el gateway, con `CURSO_CACHE=refresh python
+   scripts/run_notebook.py` (o «Run All» con esa variable), y revisar cada salida y el texto
+   que la comenta: si una demo no enseña lo que debe, cambiar la pregunta, no maquillar la
+   salida. Versionar la caché del gateway (`cache/gateway/`) y el notebook ejecutado.
+5. Exportar el notebook ejecutado a HTML, por si falla todo: `jupyter nbconvert --to html
+   curso-ia.ipynb` (`nbconvert` no está en `requirements.txt`; basta en el equipo del
+   presentador) o «Export» en el editor.
 6. Ensayo con tiempos: el guion va justo. Si hay que recortar, el bloque 3 (dejar
    embeddings y búsqueda híbrida, quitar el detalle de BM25).
