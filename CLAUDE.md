@@ -11,7 +11,13 @@ Hecho: el guion (`docs/guion.md`), las decisiones, los modelos, las limitaciones
 proyecto Ada inventado con sus trampas (`datos/`), las ayudas (`curso/`) y la comprobación
 de modelos (`scripts/check_gateway.py`, ya ejecutada con OpenRouter).
 
-Siguiente: **el notebook**, siguiendo `docs/guion.md` bloque a bloque. Antes, si se puede,
+Borrador del notebook en `borrador/`: `cells.py` (las celdas), `run.py` (las ejecuta como un kernel y
+guarda las salidas en `cells.json`) y `build.py` (la vista previa en HTML). Ejecutado con
+OpenRouter; lo aprendido está al final de `docs/guion.md`. Las ayudas que usa de `curso.show`
+(`table`, `bars`, `scatter`, `side_by_side`, `graph`, `tool`, `step`, `Limits`) están simuladas en
+`run.py`: faltan en `curso/`.
+
+Siguiente: **el notebook de verdad** (`.ipynb`), a partir del borrador y de `docs/guion.md`. Antes, si se puede,
 `check_gateway.py` contra el gateway (lo ejecuta el presentador desde la red de la empresa).
 
 ## Reglas

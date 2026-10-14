@@ -20,9 +20,10 @@ demos usan la API corporativa.
 | `curso/` | ayudas del notebook: el cliente del modelo con caché (`llm`) y los datos (`data`) |
 | `scripts/check_gateway.py` | qué admite cada modelo del servidor |
 | `resultados/` | lo que sale de `check_gateway.py` |
+| `borrador/` | el notebook en borrador: las celdas (`cells.py`), su ejecución real (`run.py` → `cells.json`) y la vista previa en HTML (`build.py`) |
 | `cache/` | las respuestas guardadas de los modelos (se crea al usarlo) |
 
-El notebook está por hacer.
+El notebook está en borrador (`borrador/`); la vista previa, en `borrador/notebook-curso-ia.html`.
 
 ## Preparar el entorno
 
