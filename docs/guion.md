@@ -168,6 +168,30 @@ en `limitaciones.md`.
 4. El semáforo: verde, ámbar, rojo.
 5. El diagrama de lo construido en la sesión.
 
+## Lo visto en el borrador
+
+El borrador (`borrador/`) se ejecutó entero con OpenRouter el 14 de octubre (gemma-4 26b;
+`bge-m3` para los embeddings). Lo que cambia el guion:
+
+- **Gancho:** con un prompt de sistema de «asistente del proyecto», se inventa «24 horas» y
+  una «Trace Lifecycle Test». (Sin ese prompt no se ha probado.)
+- **Siguiente token:** «3» un 72 %, «1» un 15 %, «2» (el del requisito) un 4 %.
+- **Tokens:** `SRS-0004` son 6 tokens; la frase en español, 14 frente a 11 en inglés.
+- **Los tres modelos encuentran el fallo de `alarms.adb`** con la sección 3 del diseño
+  delante (que dice que los identificadores se reutilizan). La demo enseña estilos y tiempos,
+  no quién acierta. Para que se distingan, quitar esa sección del contexto.
+- **Pegarlo todo** contesta «13 s» (10 + los 3 del manual) y no ve la contradicción.
+- **La híbrida deja fuera el diseño** para la pregunta en español: el manual sale arriba en
+  dos de las tres listas. Hace falta **reescribir la pregunta** antes de buscar, y **con
+  glosario**: sin él, tradujo «traza» por *trace* (de un log). Con glosario avisa de que el
+  manual (3 s) y el diseño (1,1 s) no cuadran, pero trae SRS-0006 en vez de SRS-0004: la
+  trampa de los requisitos casi iguales funciona sola.
+- **«¿Qué cifrado…?»:** «No lo sé.» Bien.
+- **Agente:** lee el requisito, la traza y `track_store.adb`, dice que cumplir los 2 s
+  depende del bucle principal, pero no abre `tms_main.adb`; empieza con «no cumple» y acaba
+  con «es funcionalmente correcto». Buen material para el bloque. Falta probarlo con
+  `reasoning_effort: low` y temperatura 1,0, la configuración que funcionó escribiendo Ada.
+
 ## Antes de la sesión
 
 1. `python -m curso.llm` desde la red de la empresa: proxy, certificados y clave. Después,
