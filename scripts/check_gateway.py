@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """What each model of the server supports, to know which demos of the notebook work.
 
-    python scripts/check_gateway.py                         # the profile's three models
+    python scripts/check_gateway.py                         # the models of CURSO_MODELS
     python scripts/check_gateway.py gemma-4 gpt-oss-120b    # these models
 
 For each model: a plain answer, logprobs, several answers in one request (n), tools (the
@@ -27,12 +27,6 @@ import openai
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from curso import data, llm  # noqa: E402
-
-DEFAULT_MODELS = {
-    "gateway": ["gemma-4", "gpt-oss-120b", "devstral"],
-    "openrouter": ["google/gemma-4-26b-a4b-it", "openai/gpt-oss-120b",
-                   "mistralai/devstral-2512"],
-}
 
 SRS_0004 = ("SRS-0004: The software shall delete a track within 2 s when no report has "
             "been received for that track for 10 s.")
@@ -240,7 +234,7 @@ def report(result: dict) -> str:
 
 def main(argv: list[str]) -> int:
     s = llm.settings()
-    models = argv or DEFAULT_MODELS[s.profile]
+    models = argv or list(s.models)
     result = {"profile": s.profile,
               "date": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
               "offered": None, "models": {}}
